@@ -1,15 +1,31 @@
-accelerator: "auto"               # Automatically selects the best accelerator (e.g., GPU, TPU, or CPU)
-precision: 32                     # Sets the precision for training (32-bit floating point)
-max_epochs: 20                    # Maximum number of training epochs
-log_every_n_steps: 10             # Logs metrics every 10 steps
-deterministic: True               # Ensures deterministic behavior for reproducibility
+# --- Hardware & Reproducibility ---
+accelerator: "auto"
+precision: 32
+deterministic: True
+seed: 42
 
-save_top_k: 1                     # Saves only the top 1 model checkpoint based on validation performance
-checkpoint_interval: 5            # Saves a checkpoint every 5 epochs
-use_wandb: True                   # Enables logging to Weights & Biases (wandb)
-checkpoint_dir: "checkpoints/"    # Directory to save model checkpoints
+# --- Training Schedule ---
+max_epochs: 50
+eval_period: 1                    # How often to run full validation (every N epochs)
+log_every_n_steps: 10             # How often to log scalars to wandb/console
 
+# --- Solver (Optimizer & Loss) ---
 optimizer:
-  _target_: torch.optim.Adam      # Specifies the optimizer to use (Adam)
-  lr: 1e-3                        # Learning rate for the optimizer
-  weight_decay: 1e-5              # Weight decay (L2 regularization) for the optimizer
+  _target_: torch.optim.Adam
+  lr: 0.001
+  weight_decay: 1e-5
+  betas: [0.9, 0.999]
+
+criterion:
+  _target_: torch.nn.CrossEntropyLoss
+
+# --- Checkpointing & Persistence ---
+checkpoint_period: 5              # Save a checkpoint every N epochs
+checkpoint_dir: "checkpoints"     # Root directory for artifacts
+resume_from_checkpoint: null      # Optional: path/to/model.pt
+save_top_k: 1                     # Reference for logic growth (e.g., best.pt)
+
+# --- Logging & Experiment Tracking ---
+use_wandb: True
+no_wandb: False                   # Added for easy CLI override: trainer.no_wandb=True
+wandb_run_name: null              # Optional: custom name for the run

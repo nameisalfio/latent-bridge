@@ -1,4 +1,4 @@
-name: "cifar10"                       # Name of the dataset being used
+name: "cifar10"                       
 data_dir: ${paths.data_dir}           # Directory path for the dataset, dynamically set from paths
 batch_size: 128                       # Number of samples per batch for training
 num_workers: ${compute.num_workers}   # Number of worker threads for data loading
