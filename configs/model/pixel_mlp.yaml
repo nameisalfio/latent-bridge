@@ -1,0 +1,5 @@
+_target_: src.models.pixel_mlp.PixelMLP  # Specifies the class to instantiate the PixelMLP model
+input_dim: 3072                          # Dimension of the input features
+hidden_layers: [1024, 512, 256]          # Sizes of the hidden layers in the MLP
+num_classes: 10                          # Number of output classes for classification
+dropout_rate: 0.2                        # Dropout rate to prevent overfitting

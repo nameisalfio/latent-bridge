@@ -1,0 +1,4 @@
+_target_: src.models.spatial_cnn.SpatialCNN  # Specifies the class to instantiate the SpatialCNN model
+channels: [3, 32, 64, 128]                   # Defines the number of channels for each layer in the CNN
+latent_dim: 256                              # Sets the dimensionality of the latent space
+num_classes: 10                              # Specifies the number of output classes for classification

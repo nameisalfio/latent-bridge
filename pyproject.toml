@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "latent-bridge"
+version = "0.1.0"
+description = "A study on MLP performance on raw pixels vs latent vectors"
+dependencies = [
+    "torch",
+    "torchvision",
+    "hydra-core",
+    "numpy<2.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]

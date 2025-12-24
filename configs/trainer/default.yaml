@@ -1,0 +1,14 @@
+accelerator: "auto"               # Automatically selects the best accelerator (e.g., GPU, TPU, or CPU)
+precision: 32                     # Sets the precision for training (32-bit floating point)
+max_epochs: 20                    # Maximum number of training epochs
+log_every_n_steps: 10             # Logs metrics every 10 steps
+deterministic: True               # Ensures deterministic behavior for reproducibility
+
+save_top_k: 1                     # Saves only the top 1 model checkpoint based on validation performance
+checkpoint_interval: 5            # Saves a checkpoint every 5 epochs
+use_wandb: True                   # Enables logging to Weights & Biases (wandb)
+
+optimizer:
+  _target_: torch.optim.Adam      # Specifies the optimizer to use (Adam)
+  lr: 1e-3                        # Learning rate for the optimizer
+  weight_decay: 1e-5              # Weight decay (L2 regularization) for the optimizer

@@ -1,0 +1,13 @@
+defaults:
+  - _self_                                                                  # Default configuration for the current file
+  - model: pixel_mlp                                                        # Specifies the model configuration to use
+  - dataset: cifar10                                                        # Specifies the dataset configuration to use
+  - trainer: default                                                        # Specifies the trainer configuration to use
+
+paths:
+  data_dir: ${hydra:runtime.cwd}/data                                       # Directory for storing data
+  output_dir: ${hydra:runtime.cwd}/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}  # Directory for storing outputs with timestamp
+
+compute:
+  num_workers: 4                                                            # Number of workers for data loading
+  pin_memory: True                                                          # Whether to use pinned memory for data loading
