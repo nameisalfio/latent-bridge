@@ -7,6 +7,7 @@ deterministic: True               # Ensures deterministic behavior for reproduci
 save_top_k: 1                     # Saves only the top 1 model checkpoint based on validation performance
 checkpoint_interval: 5            # Saves a checkpoint every 5 epochs
 use_wandb: True                   # Enables logging to Weights & Biases (wandb)
+checkpoint_dir: "checkpoints/"    # Directory to save model checkpoints
 
 optimizer:
   _target_: torch.optim.Adam      # Specifies the optimizer to use (Adam)

@@ -39,6 +39,7 @@ models/*
 # We ignore the actual runs to keep the repo light.
 outputs/
 multirun/
+checkpoint_dir/*
 
 # --- Experiment Tracking (WandB / MLFlow) ---
 # WandB creates a local 'wandb' folder for sync metadata.

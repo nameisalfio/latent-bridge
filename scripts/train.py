@@ -1,6 +1,7 @@
 import os
 import hydra
 import wandb
+import Path
 import torch
 import torch.nn as nn
 from omegaconf import DictConfig, OmegaConf
@@ -12,18 +13,20 @@ def train(cfg: DictConfig):
     log_hardware()
     device = get_device()
 
-    # 1. Initialize Experiment Tracker (WandB)
+    # 1. Initialize Experiment Tracker and Checkpoint Directory
     if cfg.trainer.use_wandb:
         wandb.init(
             project="latent-bridge",
             config=OmegaConf.to_container(cfg, resolve=True),
             name=f"{cfg.model._target_.split('.')[-1]}_{cfg.dataset.name}"
         )
+    model_name = cfg.model._target_.split(".")[-1]
+    ckpt_dir = Path(cfg.trainer.checkpoint_dir) / model_name
+    ckpt_dir.mkdir(parents=True, exist_ok=True)
 
     # 2. Setup Dataloader & Model
     train_loader = get_dataloader(cfg, train=True)
     model: nn.Module = hydra.utils.instantiate(cfg.model).to(device)
-    
     criterion = nn.CrossEntropyLoss()
     optimizer = hydra.utils.instantiate(cfg.trainer.optimizer, params=model.parameters())
 
@@ -40,7 +43,7 @@ def train(cfg: DictConfig):
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
-            
+
         avg_loss = running_loss / len(train_loader)
         
         # 4. Metrics & Visualization
@@ -55,15 +58,24 @@ def train(cfg: DictConfig):
         print(f"Epoch {epoch}: {metrics}")
 
         # 5. Structured Checkpointing
-        if (epoch + 1) % cfg.trainer.checkpoint_interval == 0:
-            checkpoint_path = f"checkpoint_epoch_{epoch}.pt"
+        if (epoch) % cfg.trainer.checkpoint_interval == 0:
+            checkpoint_path = ckpt_dir / f"checkpoint_epoch_{epoch}.pt"
             torch.save({
                 'epoch': epoch,
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
                 'loss': avg_loss,
             }, checkpoint_path)
-            print(f"Checkpoint saved to {os.getcwd()}/{checkpoint_path}")
+            print(f"Checkpoint saved to: {checkpoint_path}")
+
+    # Save final checkpoint
+    final_path = ckpt_dir / "last_checkpoint.pt"
+    torch.save({
+        'epoch': epoch,
+        'model_state_dict': model.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        'loss': avg_loss,
+    }, final_path)
 
     if cfg.trainer.use_wandb:
         wandb.finish()
