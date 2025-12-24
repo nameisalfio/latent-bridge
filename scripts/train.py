@@ -1,9 +1,9 @@
 import os
 import hydra
 import wandb
-import Path
 import torch
 import torch.nn as nn
+from pathlib import Path
 from omegaconf import DictConfig, OmegaConf
 from src.utils.device import get_device, log_hardware
 from src.data.datamodule import get_dataloader 
@@ -66,7 +66,6 @@ def train(cfg: DictConfig):
                 'optimizer_state_dict': optimizer.state_dict(),
                 'loss': avg_loss,
             }, checkpoint_path)
-            print(f"Checkpoint saved to: {checkpoint_path}")
 
     # Save final checkpoint
     final_path = ckpt_dir / "last_checkpoint.pt"
@@ -76,6 +75,7 @@ def train(cfg: DictConfig):
         'optimizer_state_dict': optimizer.state_dict(),
         'loss': avg_loss,
     }, final_path)
+    print(f"\nLast checkpoint saved to: {final_path}")
 
     if cfg.trainer.use_wandb:
         wandb.finish()

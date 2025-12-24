@@ -13,7 +13,7 @@ class PixelMLP(BaseModel):
         input_dim: int, 
         hidden_layers: List[int], 
         num_classes: int,
-        dropout_rate: float = 0.2
+        dropout_rate: float
     ):
         super().__init__()
         
