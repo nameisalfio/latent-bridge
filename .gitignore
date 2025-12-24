@@ -1,0 +1,30 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+env/
+venv/
+lb-env/
+
+# Data & Models (Crucial)
+data/**
+!data/.gitkeep
+models/**
+!models/.gitkeep
+outputs/
+multirun/
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
+
+# Experiment Tracking
+mlruns/
+wandb/
+
+# Docker
+.docker/

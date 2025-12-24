@@ -1,67 +1,105 @@
 #!/bin/bash
-# setup_project.sh
 
-PROJECT_NAME="latent-bridge"
-ENV_NAME="lb-env"
+# Define the root directory name
+REPO_NAME="latent-bridge"
 
-echo "🚀 Initializing $PROJECT_NAME..."
+echo "🏗️ Building MLOps structure for $REPO_NAME..."
 
-# 1. Create Directory Structure
-mkdir -p $PROJECT_NAME/{notebooks,configs,data/{raw,processed},scripts,tests,src/{data,models,utils,pipeline}}
-touch $PROJECT_NAME/src/__init__.py
-touch $PROJECT_NAME/src/data/__init__.py
-touch $PROJECT_NAME/src/models/__init__.py
-touch $PROJECT_NAME/src/utils/__init__.py
-touch $PROJECT_NAME/src/pipeline/__init__.py
+# Create core directory structure
+mkdir -p configs/{model,dataset,trainer}
+mkdir -p data/{raw,processed}
+mkdir -p notebooks
+mkdir -p scripts
+mkdir -p src/{data,models,utils,pipeline}
+mkdir -p tests
 
-# 2. Create Initial Configuration (Hydra style)
-cat <<EOT > $PROJECT_NAME/configs/config.yaml
-project_name: "latent-bridge"
-device: "auto" # Will be handled by src/utils/hardware.py
+# Create placeholders for data and models to ensure git tracks the folders
+touch data/.gitkeep
+touch models/.gitkeep
 
-experiment:
-  name: "mlp_vs_cnn_features"
-  batch_size: 64
-  epochs: 10
-  lr: 1e-3
+# Initialize __init__.py files for the src package
+touch src/__init__.py
+touch src/data/__init__.py
+touch src/models/__init__.py
+touch src/utils/__init__.py
+touch src/pipeline/__init__.py
 
-model:
-  type: "mlp_direct" # options: [mlp_direct, cnn_hybrid]
-  input_dim: 784
-  hidden_dims: [512, 256]
-  num_classes: 10
-EOT
-
-# 3. Create Hardware Auto-Detection Utility
-cat <<EOT > $PROJECT_NAME/src/utils/hardware.py
+# Create a high-level Device Manager in utils
+cat <<EOF > src/utils/device.py
 import torch
 
 def get_device() -> torch.device:
+    """Auto-detects hardware: CUDA > MPS > CPU."""
     if torch.cuda.is_available():
         return torch.device("cuda")
     elif torch.backends.mps.is_available():
         return torch.device("mps")
     return torch.device("cpu")
-EOT
 
-# 4. Create Requirements & Environment
-cat <<EOT > $PROJECT_NAME/requirements.txt
+def log_hardware():
+    device = get_device()
+    print(f"🚀 Execution Device: {device}")
+EOF
+
+# Create a placeholder for the Base Model interface
+cat <<EOF > src/models/base.py
+from abc import ABC, abstractmethod
+import torch.nn as nn
+
+class BaseModel(nn.Module, ABC):
+    def __init__(self):
+        super().__init__()
+
+    @abstractmethod
+    def forward(self, x):
+        pass
+EOF
+
+# Create a skeleton requirements.txt
+cat <<EOF > requirements.txt
 torch==2.1.0
 torchvision
 numpy<2.0
-pillow
-opencv-python-headless
 hydra-core
 omegaconf
+pydantic
+opencv-python-headless
+Pillow
 tqdm
 pytest
-EOT
+EOF
 
-# 5. Setup Conda
-conda create -n $ENV_NAME python=3.10 -y
-source $(conda info --base)/etc/profile.d/conda.sh
-conda activate $ENV_NAME
-pip install -r $PROJECT_NAME/requirements.txt
-pip install -e $PROJECT_NAME/ # Install src as an editable package
+# Create a basic Dockerfile
+cat <<EOF > Dockerfile
+FROM pytorch/pytorch:2.1.0-cuda11.8-cudnn8-devel
 
-echo "✅ Structure built. To start: cd $PROJECT_NAME && conda activate $ENV_NAME"
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir --no-build-isolation -r requirements.txt
+
+COPY . .
+RUN pip install -e .
+
+CMD ["python", "scripts/train.py"]
+EOF
+
+# Create a basic docker-compose.yaml
+cat <<EOF > docker-compose.yaml
+version: '3.8'
+services:
+  train:
+    build: .
+    volumes:
+      - .:/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+EOF
+
+chmod +x setup.sh
+echo "✅ Project structure complete."
+echo "💡 Reminder: Run 'pip install -e .' to make the 'src' folder importable."

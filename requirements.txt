@@ -1,9 +1,10 @@
 torch==2.1.0
 torchvision
 numpy<2.0
-pillow
-opencv-python-headless
 hydra-core
 omegaconf
+pydantic
+opencv-python-headless
+Pillow
 tqdm
 pytest
