@@ -41,6 +41,7 @@ outputs/
 multirun/
 checkpoint_dir/*
 *checkpoint*
+results/*
 
 # --- Experiment Tracking (WandB / MLFlow) ---
 # WandB creates a local 'wandb' folder for sync metadata.
