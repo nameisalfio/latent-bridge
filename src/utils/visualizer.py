@@ -2,6 +2,8 @@ import torch
 import numpy as np
 import matplotlib.pyplot as plt
 from typing import List, Optional
+import seaborn as sns
+from sklearn.metrics import RocCurveDisplay, PrecisionRecallDisplay
 
 class Visualizer:
     def __init__(self, class_names: List[str]):
@@ -48,3 +50,30 @@ class Visualizer:
         
         plt.tight_layout()
         return fig
+    
+def plot_confusion_matrix(cm, class_names, output_path):
+    plt.figure(figsize=(12, 10))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+                xticklabels=class_names, yticklabels=class_names)
+    plt.title('Confusion Matrix')
+    plt.ylabel('True Label')
+    plt.xlabel('Predicted Label')
+    plt.tight_layout()
+    plt.savefig(output_path)
+    plt.close()
+
+def plot_roc_curves(y_true, y_probs, class_names, output_path):
+    _, ax = plt.subplots(figsize=(10, 8))
+    for i, class_name in enumerate(class_names):
+        # One-vs-Rest ROC
+        RocCurveDisplay.from_predictions(
+            (y_true == i).astype(int), 
+            y_probs[:, i], 
+            name=f"ROC {class_name}", 
+            ax=ax
+        )
+    plt.plot([0, 1], [0, 1], "k--", label="chance level (AUC = 0.5)")
+    plt.title("Multiclass ROC Curves (One-vs-Rest)")
+    plt.legend()
+    plt.savefig(output_path)
+    plt.close()

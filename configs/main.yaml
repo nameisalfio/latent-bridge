@@ -20,3 +20,4 @@ compute:
 # Path resolution
 paths:
   data_dir: ${hydra:runtime.cwd}/data
+  image_path: data/test_samples/airplane.jpg
