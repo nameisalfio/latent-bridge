@@ -112,3 +112,9 @@ pytest tests/test_model_performance.py
 | **PixelMLP**   | ~45%     | 0.43     | Low                |
 
 **Conclusion**: Convolutional layers act as a superior bridge for image data by enforcing local connectivity and translation invariance, whereas MLPs require significantly more data to learn the same spatial relationships.
+
+---
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
