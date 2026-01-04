@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Installation
 
@@ -42,7 +42,7 @@ python scripts/train.py \
 
 ---
 
-## 📊 Project Architecture
+## Project Architecture
 
 The project is designed with a modular MLOps approach:
 
@@ -54,7 +54,7 @@ The project is designed with a modular MLOps approach:
 
 ---
 
-## 🧪 Evaluation & Benchmarking
+## Evaluation & Benchmarking
 
 The evaluation suite goes beyond simple accuracy to provide a deep dive into model performance.
 
@@ -79,7 +79,7 @@ Located in `notebooks/exploration.ipynb`, this test applies a spatial translatio
 
 ---
 
-## 🔍 Inference
+## Inference
 
 Test the model on single external images:
 
@@ -89,7 +89,7 @@ python scripts/inference.py model=spatial_cnn image_path=path/to/your_image.jpg
 
 ---
 
-## 🛠 CI/CD and Quality Assurance
+## CI/CD and Quality Assurance
 
 We implement **Model Regression Testing**. Every push to the repository triggers a pipeline that verifies:
 
@@ -104,7 +104,7 @@ pytest tests/test_model_performance.py
 
 ---
 
-## 📈 Key Findings
+## Key Findings
 
 | Architecture | Accuracy | F1 Macro | Spatial Robustness |
 |--------------|----------|----------|--------------------|
