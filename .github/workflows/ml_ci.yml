@@ -19,7 +19,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
-      
+
+      - name: Generate Evaluation Metrics
+        run: |
+          python scripts/test.py model=spatial_cnn trainer.no_wandb=True
+          python scripts/test.py model=pixel_mlp trainer.no_wandb=True
+
       - name: Run Model Regression Tests
         run: |
           pytest tests/test_model_performance.py
